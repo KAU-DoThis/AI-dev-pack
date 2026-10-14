@@ -1,0 +1,29 @@
+# Install PyTorch CUDA wheels from the official index.
+# Change cu126 to your CUDA build if needed (cu118, cu124, etc.).
+--extra-index-url https://download.pytorch.org/whl/cu126
+
+# Core
+numpy
+scipy
+torch
+librosa
+soundfile
+tqdm
+
+# Voice conversion / separation
+onnxruntime-gpu
+# fairseq 0.12.x depends on omegaconf metadata that pip>=24.1 rejects.
+# Install with pip<24.1 before running this requirements file.
+
+#python -m pip install "pip<24.1"
+#python -m pip install -r requirements-gpu.txt
+fairseq==0.12.2
+torchcrepe
+faiss-cpu
+praat-parselmouth
+
+# Audio processing
+pedalboard
+pydub
+pyworld
+ffmpeg-python

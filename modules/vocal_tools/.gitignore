@@ -1,0 +1,63 @@
+@"
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Build / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Test / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local outputs
+output/
+outputs/
+tmp/
+temp/
+
+# Local model files
+test_models/
+models/
+data/models/
+
+# Large ML/audio model files
+*.onnx
+*.pt
+*.pth
+*.index
+*.ckpt
+*.safetensors
+
+# Audio outputs / test media
+*.wav
+*.mp3
+*.flac
+*.ogg
+*.m4a
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+logs/
+"@ | Set-Content -Encoding UTF8 .gitignore

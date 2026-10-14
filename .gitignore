@@ -1,0 +1,42 @@
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Secrets and local environment configuration
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+build/
+dist/
+*.egg-info/
+
+# Node.js tools/modules
+node_modules/
+npm-debug.log*
+
+# Local logs and temporary files
+*.log
+*.tmp
+
+# IntelliJ related files
+.idea
+*.iml
+
+# VS Code related files
+.vscode

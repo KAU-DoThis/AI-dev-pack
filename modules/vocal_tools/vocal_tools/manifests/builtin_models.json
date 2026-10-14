@@ -1,0 +1,389 @@
+[
+  {
+    "id": "kim_vocal_2",
+    "name": "Kim Vocal 2",
+    "arch": "mdx_onnx",
+    "filename": "Kim_Vocal_2.onnx",
+    "tasks": ["vocal_separation"],
+    "output_stems": ["vocals", "instrumental"],
+    "tags": ["mdx", "vocal", "2-stem", "cover-ready"],
+    "description": "Default MDX vocal separation model for vocals and instrumental stems.",
+    "download_url": null,
+    "sha256": null,
+    "file_size": null,
+    "defaults": {
+      "primary_stem": "vocals",
+      "secondary_stem": "instrumental",
+      "sample_rate": 44100,
+      "stereo": true
+    },
+    "options": [
+      {
+        "name": "denoise",
+        "label": "Denoise",
+        "group": "quality",
+        "type": "bool",
+        "default": false,
+        "help": "Run the MDX denoise pass when supported.",
+        "advanced": false
+      }
+    ],
+    "ui": {
+      "category": "MDX vocal separation",
+      "recommended": true,
+      "sort_order": 100,
+      "warning": null
+    },
+    "metadata": {
+      "implementation_status": "working"
+    }
+  },
+  {
+    "id": "uvr_mdxnet_kara_2",
+    "name": "UVR MDX-Net Karaoke 2",
+    "arch": "mdx_onnx",
+    "filename": "UVR_MDXNET_KARA_2.onnx",
+    "tasks": ["karaoke", "lead_vocal_removal"],
+    "output_stems": ["instrumental", "vocals"],
+    "tags": ["mdx", "karaoke", "2-stem"],
+    "description": "MDX karaoke / lead vocal removal model.",
+    "download_url": null,
+    "sha256": null,
+    "file_size": null,
+    "defaults": {
+      "primary_stem": "instrumental",
+      "secondary_stem": "vocals",
+      "sample_rate": 44100,
+      "stereo": true
+    },
+    "options": [
+      {
+        "name": "denoise",
+        "label": "Denoise",
+        "group": "quality",
+        "type": "bool",
+        "default": false,
+        "advanced": false
+      }
+    ],
+    "ui": {
+      "category": "MDX karaoke",
+      "recommended": false,
+      "sort_order": 120,
+      "warning": null
+    },
+    "metadata": {
+      "implementation_status": "working"
+    }
+  },
+  {
+    "id": "reverb_hq_by_foxjoy",
+    "name": "Reverb HQ by FoxJoy",
+    "arch": "mdx_onnx",
+    "filename": "Reverb_HQ_By_FoxJoy.onnx",
+    "tasks": ["dereverb"],
+    "output_stems": ["dry_vocals", "reverb"],
+    "tags": ["mdx", "dereverb", "2-stem"],
+    "description": "MDX dereverb model for splitting dry vocals and reverb.",
+    "download_url": null,
+    "sha256": null,
+    "file_size": null,
+    "defaults": {
+      "primary_stem": "dry_vocals",
+      "secondary_stem": "reverb",
+      "sample_rate": 44100,
+      "stereo": true
+    },
+    "options": [
+      {
+        "name": "denoise",
+        "label": "Denoise",
+        "group": "quality",
+        "type": "bool",
+        "default": false,
+        "advanced": false
+      }
+    ],
+    "ui": {
+      "category": "MDX dereverb",
+      "recommended": false,
+      "sort_order": 130,
+      "warning": null
+    },
+    "metadata": {
+      "implementation_status": "working"
+    }
+  },
+  {
+    "id": "htdemucs",
+    "name": "HTDemucs 4 Stems",
+    "arch": "demucs",
+    "filename": null,
+    "tasks": ["music_source_separation"],
+    "output_stems": ["drums", "bass", "other", "vocals"],
+    "tags": ["demucs", "4-stem", "music-source-separation", "package-managed"],
+    "description": "Demucs package-managed 4-stem music source separation model.",
+    "download_url": null,
+    "sha256": null,
+    "file_size": null,
+    "defaults": {
+      "model_name": "htdemucs",
+      "device": "auto",
+      "output_format": "wav",
+      "managed_by": "demucs"
+    },
+    "options": [
+      {
+        "name": "device",
+        "label": "Device",
+        "group": "runtime",
+        "type": "enum",
+        "default": "auto",
+        "choices": ["auto", "cuda", "cpu"],
+        "advanced": false
+      },
+      {
+        "name": "shifts",
+        "label": "Shifts",
+        "group": "quality",
+        "type": "int",
+        "default": 1,
+        "min": 1,
+        "max": 20,
+        "step": 1,
+        "advanced": true,
+        "help": "Higher values may improve quality but are slower."
+      },
+      {
+        "name": "overlap",
+        "label": "Overlap",
+        "group": "quality",
+        "type": "float",
+        "default": 0.25,
+        "min": 0.0,
+        "max": 0.99,
+        "step": 0.01,
+        "advanced": true
+      },
+      {
+        "name": "two_stems",
+        "label": "Two stems",
+        "group": "output",
+        "type": "enum",
+        "default": null,
+        "choices": [null, "vocals", "drums", "bass", "other"],
+        "advanced": false,
+        "help": "When set, Demucs returns the selected stem and an inverse stem such as no_vocals."
+      }
+    ],
+    "ui": {
+      "category": "Demucs 4-stem",
+      "recommended": true,
+      "sort_order": 200,
+      "warning": "Managed by the demucs package cache, not by vocal_tools model files."
+    },
+    "metadata": {
+      "implementation_status": "working",
+      "managed_by_package": true
+    }
+  },
+  {
+    "id": "htdemucs_6s",
+    "name": "HTDemucs 6 Stems",
+    "arch": "demucs",
+    "filename": null,
+    "tasks": ["music_source_separation"],
+    "output_stems": ["drums", "bass", "other", "vocals", "guitar", "piano"],
+    "tags": ["demucs", "6-stem", "music-source-separation", "package-managed"],
+    "description": "Demucs package-managed 6-stem music source separation model.",
+    "download_url": null,
+    "sha256": null,
+    "file_size": null,
+    "defaults": {
+      "model_name": "htdemucs_6s",
+      "device": "auto",
+      "output_format": "wav",
+      "managed_by": "demucs"
+    },
+    "options": [
+      {
+        "name": "device",
+        "label": "Device",
+        "group": "runtime",
+        "type": "enum",
+        "default": "auto",
+        "choices": ["auto", "cuda", "cpu"],
+        "advanced": false
+      },
+      {
+        "name": "shifts",
+        "label": "Shifts",
+        "group": "quality",
+        "type": "int",
+        "default": 1,
+        "min": 1,
+        "max": 20,
+        "step": 1,
+        "advanced": true
+      },
+      {
+        "name": "overlap",
+        "label": "Overlap",
+        "group": "quality",
+        "type": "float",
+        "default": 0.25,
+        "min": 0.0,
+        "max": 0.99,
+        "step": 0.01,
+        "advanced": true
+      },
+      {
+        "name": "two_stems",
+        "label": "Two stems",
+        "group": "output",
+        "type": "enum",
+        "default": null,
+        "choices": [null, "vocals", "drums", "bass", "other", "guitar", "piano"],
+        "advanced": false,
+        "help": "When set, Demucs returns the selected stem and an inverse stem such as no_vocals."
+      }
+    ],
+    "ui": {
+      "category": "Demucs 6-stem",
+      "recommended": false,
+      "sort_order": 210,
+      "warning": "Managed by the demucs package cache, not by vocal_tools model files."
+    },
+    "metadata": {
+      "implementation_status": "working",
+      "managed_by_package": true
+    }
+  },
+  {
+    "id": "vr_arch_vocal_default",
+    "name": "VR Arch Vocal Default",
+    "arch": "vr_arch",
+    "filename": null,
+    "tasks": ["vocal_separation"],
+    "output_stems": ["vocals", "instrumental"],
+    "tags": ["vr_arch", "vocal", "2-stem"],
+    "description": "VR Architecture vocal separation model entry. Requires a VR backend/model runner.",
+    "download_url": null,
+    "sha256": null,
+    "file_size": null,
+    "defaults": {
+      "managed_by": "external",
+      "primary_stem": "vocals",
+      "secondary_stem": "instrumental",
+      "backend": "auto",
+      "device": "auto"
+    },
+    "options": [
+      {
+        "name": "device",
+        "label": "Device",
+        "type": "enum",
+        "default": "auto",
+        "choices": ["auto", "cuda", "cpu"],
+        "advanced": false
+      },
+      {
+        "name": "aggression",
+        "label": "Aggression",
+        "type": "int",
+        "default": 5,
+        "min": 0,
+        "max": 20,
+        "advanced": true
+      },
+      {
+        "name": "window_size",
+        "label": "Window Size",
+        "type": "int",
+        "default": 512,
+        "choices": [320, 512, 1024],
+        "advanced": true
+      },
+      {
+        "name": "post_process",
+        "label": "Post Process",
+        "type": "bool",
+        "default": false,
+        "advanced": true
+      }
+    ],
+    "ui": {
+      "category": "VR Arch",
+      "recommended": false,
+      "sort_order": 300,
+      "warning": "Backend/model runner is not bundled yet."
+    },
+    "metadata": {
+      "status": "experimental"
+    }
+  },
+  {
+    "id": "mdxc_roformer_default",
+    "name": "MDXC / Roformer Default",
+    "arch": "mdxc",
+    "filename": null,
+    "tasks": ["music_source_separation"],
+    "output_stems": ["vocals", "instrumental"],
+    "tags": ["mdxc", "roformer", "experimental"],
+    "description": "MDXC/Roformer model entry. Requires compatible model config and backend.",
+    "download_url": null,
+    "sha256": null,
+    "file_size": null,
+    "defaults": {
+      "managed_by": "external",
+      "backend": "auto",
+      "device": "auto"
+    },
+    "options": [
+      {
+        "name": "device",
+        "label": "Device",
+        "type": "enum",
+        "default": "auto",
+        "choices": ["auto", "cuda", "cpu"],
+        "advanced": false
+      },
+      {
+        "name": "segment_size",
+        "label": "Segment Size",
+        "type": "int",
+        "default": 256,
+        "min": 32,
+        "max": 2048,
+        "advanced": true
+      },
+      {
+        "name": "overlap",
+        "label": "Overlap",
+        "type": "float",
+        "default": 0.25,
+        "min": 0.0,
+        "max": 0.99,
+        "advanced": true
+      },
+      {
+        "name": "batch_size",
+        "label": "Batch Size",
+        "type": "int",
+        "default": 1,
+        "min": 1,
+        "max": 16,
+        "advanced": true
+      }
+    ],
+    "ui": {
+      "category": "MDXC",
+      "recommended": false,
+      "sort_order": 400,
+      "warning": "Backend/model runner is not bundled yet."
+    },
+    "metadata": {
+      "status": "experimental"
+    }
+  }
+]
