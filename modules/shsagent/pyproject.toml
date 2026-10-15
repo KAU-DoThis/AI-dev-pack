@@ -1,0 +1,51 @@
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "shs-agent"
+version = "0.1.0"
+description = "General-purpose problem solving agent runtime"
+requires-python = ">=3.11"
+
+dependencies = [
+    "SQLAlchemy>=2.0,<3.0",
+]
+
+[project.optional-dependencies]
+
+# LLM Providers
+openai = [
+    "openai",
+]
+
+ollama = [
+    "ollama",
+]
+
+# Storage Providers
+postgresql = [
+    "psycopg[binary]>=3.1,<4.0",
+]
+
+mysql = [
+    "PyMySQL>=1.1,<2.0",
+]
+
+# Development
+dev = [
+    "pytest",
+    "pytest-asyncio",
+]
+
+# All optional providers
+all = [
+    "openai",
+    "ollama",
+    "psycopg[binary]>=3.1,<4.0",
+    "PyMySQL>=1.1,<2.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
