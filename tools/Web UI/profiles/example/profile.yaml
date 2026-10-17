@@ -1,0 +1,9 @@
+# 예시 프로필: 고객 문의를 담당 팀으로 나누기.
+# Jeff 견본 데이터(vendor/jeff/examples/adapter-kit/sample)와 같은 문제라, 학습·평가 탭 기본 견본으로 바로 돌려 볼 수 있다.
+# 새 프로젝트는 이 폴더를 복사해 profiles/<이름>/ 로 만들고 config/settings.yaml 의 profile 을 바꾼다.
+
+name: Example
+title: 고객 문의 분류        # 화면 제목
+item: 문의                   # 판단할 대상 하나를 부르는 말
+display_keys: [company, channel]   # 결과 기록에 이름으로 보여줄 입력 칸 (앞에서부터 찾음)
+examples_source: 직접 만든 예시

@@ -1,0 +1,4 @@
+# 웹 UI (Windows). 모델·학습 패키지(torch 등)는 엔진 쪽 환경에 따로 (Jeff: WSL 안 ~/jeff-train/jeff/.venv)
+gradio==6.30.0
+pyyaml
+pytest

@@ -1,0 +1,8 @@
+# 엔진에 보내는 지시문과 선택지 설명 (영어). 추론 탭의 "설명 저장" 버튼이 이 파일을 덮어쓴다.
+# 선택지 id 목록은 labels.yaml 이 기준.
+instructions: Which team should handle this message?
+options:
+  refund: Refunds, double charges and money back
+  delivery: Shipping, tracking and delivery problems
+  account: Logging in, passwords and account settings
+  other: Not for any of these teams

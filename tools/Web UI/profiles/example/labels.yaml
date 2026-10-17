@@ -1,0 +1,13 @@
+# 모델이 고를 수 있는 라벨. 이 목록 밖 출력은 전부 실패로 본다.
+
+actions:
+  - id: refund
+    name: 환불팀
+  - id: delivery
+    name: 배송팀
+  - id: account
+    name: 계정팀
+  - id: other
+    name: 해당 없음
+
+categories: []

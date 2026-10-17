@@ -1,0 +1,58 @@
+# 추론 탭 예시 거래. 출처: 산학프로젝트/질의응답.txt (팀 Q&A).
+# 시연·동작 확인용이다. 평가 시험셋에 넣지 않는다 (시험셋은 실제 데이터로 따로 잠금).
+# expect = 메모장 원칙상 나와야 하는 행동. 결과 기록에 일치 여부로 표시만 한다.
+# 금액은 팀 transactions 형식대로 양수 + direction(out/in). 음수로 쓰면 Jeff가 ask 쪽으로 기운다 (10/12 확인).
+
+examples:
+  - name: 스타벅스 (아는 가맹점)
+    expect: auto
+    state:
+      merchant: 스타벅스 강남역점
+      amount: 4500
+      direction: out
+      method: card
+      category_guess: cafe
+      profile_match: null
+
+  - name: KT 통신비 (아는 정기 지출)
+    expect: auto
+    state:
+      merchant: KT 통신요금
+      amount: 55000
+      direction: out
+      method: auto_transfer
+      category_guess: telecom
+      recurring: {cycle: monthly, day: 10, months_seen: 6}
+      profile_match: null
+
+  - name: PAYCO 42,000원 (용도 모름)
+    expect: ask
+    state:
+      merchant: PAYCO
+      amount: 42000
+      direction: out
+      method: easy_pay
+      category_guess: null
+      profile_match: null
+
+  - name: 홍길동 60만원 반복 (Profile 없음)
+    expect: ask
+    state:
+      counterparty: 홍길동
+      amount: 600000
+      direction: out
+      method: transfer
+      category_guess: null
+      recurring: {cycle: monthly, day: 25, months_seen: 3, history: ["07-25 -600000", "08-25 -600000", "09-24 -600000"]}
+      profile_match: null
+
+  - name: 홍길동 60만원 (Profile에 월세)
+    expect: auto
+    state:
+      counterparty: 홍길동
+      amount: 600000
+      direction: out
+      method: transfer
+      category_guess: null
+      recurring: {cycle: monthly, day: 25, months_seen: 4}
+      profile_match: {purpose: 월세, cycle: monthly, expected_day: 25, expected_amount: 600000}

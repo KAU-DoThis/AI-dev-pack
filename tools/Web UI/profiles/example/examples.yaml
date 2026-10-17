@@ -1,0 +1,28 @@
+# 추론 탭 예시 (시연·확인용, 평가 시험셋 아님). 견본 데이터와 겹치지 않게 새로 쓴 문장.
+# expect = 사람이 생각한 정답 (결과 기록의 '일치' 칸)
+
+examples:
+  - name: 두 번 결제됨
+    expect: refund
+    state:
+      company: Northwind Shoes
+      channel: email
+      message: My card shows two payments for the same order. Please send one back.
+  - name: 택배가 안 옴
+    expect: delivery
+    state:
+      company: Northwind Shoes
+      channel: chat
+      message: The parcel was supposed to arrive on Monday and it is still not here.
+  - name: 비밀번호 재설정
+    expect: account
+    state:
+      company: Blue Harbor Books
+      channel: chat
+      message: The reset link never reaches my inbox, so I cannot log in.
+  - name: 매장 영업시간 문의
+    expect: other
+    state:
+      company: Blue Harbor Books
+      channel: email
+      message: What time does your downtown store open on Sundays?

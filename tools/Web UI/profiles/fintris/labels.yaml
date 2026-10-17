@@ -1,0 +1,15 @@
+# Jeff가 고를 수 있는 라벨. 이 목록 밖 출력은 전부 실패로 본다.
+# 초안: 최종제안서 p.28 / 아키텍처 Q41 기준. 확정은 재혁·승현 (10번 노트 "같이 정할 것" 3번).
+
+actions:
+  - id: auto
+    name: 자동 처리
+  - id: slm
+    name: sLM 문장 생성
+  - id: external
+    name: 외부 LLM (Gemini)   # 멘토 피드백(05 F3)에 따라 빠질 수 있음
+  - id: ask
+    name: 사용자에게 질문
+
+# TODO: 분류기 카테고리 코드(fintris-ai categories)와 맞춰서 채우기. BE categories.code 와도 같아야 함.
+categories: []
