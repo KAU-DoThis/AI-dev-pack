@@ -1,0 +1,2 @@
+# WSL(리눅스)에서 도는 스크립트는 줄바꿈이 LF 여야 한다 (CRLF 면 bash 가 '\r' 오류)
+*.sh text eol=lf

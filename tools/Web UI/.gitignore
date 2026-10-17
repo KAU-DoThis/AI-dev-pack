@@ -1,0 +1,29 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.gradio/
+
+# 프로젝트 데이터·학습 결과는 커밋 안 함 (profiles/<이름>/data, outputs)
+profiles/*/data/*
+profiles/*/outputs/*
+!profiles/*/data/.gitkeep
+!profiles/*/outputs/.gitkeep
+
+# 엔진 가중치 (safetensors 등) 커밋 안 함
+engines/*/models/
+
+# 서버 로그·백업·비교 기록
+logs/
+
+# Jeff 원본 저장소·설치 캐시 (웹 UI가 받아서 씀)
+vendor/
+.cache/
+
+# 이 컴퓨터 전용 설정 (다른 프로필·주소 등)
+config/settings.local.yaml
+
+# 도구·에이전트 작업 파일 (Claude Code·OMC·Playwright 스크린샷)
+.claude/
+.omc/
+CLAUDE.md
+.playwright-mcp/

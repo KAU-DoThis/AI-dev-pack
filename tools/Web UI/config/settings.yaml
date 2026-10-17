@@ -1,0 +1,24 @@
+# 웹 UI 설정. 환경변수가 있으면 환경변수가 이긴다 (AWS로 옮길 때 파일 안 고치고 주소만 바꾸려고).
+
+title: Jeff WebUI    # 화면 맨 위 이름
+
+# 어떤 프로젝트를 올릴지: profiles/<이름>/ 폴더. 환경변수 WEBUI_PROFILE
+# 내 컴퓨터에서만 다른 프로필을 쓰려면 config/settings.local.yaml (커밋 안 함) 에 `profile: <이름>`
+profile: example
+
+# 어떤 모델을 쓸지: engines/<이름>/ 폴더. 환경변수 WEBUI_ENGINE
+engine: jeff
+
+# 엔진별 설정 (각 엔진이 자기 것만 읽는다)
+engines:
+  jeff:
+    url: http://127.0.0.1:8765   # 환경변수 JEFF_URL
+    model: ""                    # 환경변수 JEFF_MODEL. 비우면 서버 /health 가 알려주는 모델 이름을 쓴다
+    timeout: 30                  # 초. 첫 요청은 모델 준비 때문에 느릴 수 있음
+    # 학습은 WSL 안에서 (jeff-train 이 윈도우에서 안 돎). 서버도 WSL 에서: engines/jeff/wsl/serve.sh
+    train:
+      distro: Ubuntu-24.04
+      user: user
+      root: /home/user/jeff-train   # jeff/(코드·.venv) models/(베이스) runs/(학습 기록) adapters/(결과)
+      base_model: Qwen/Qwen3.5-0.8B # v1.3 베이스가 만들어진 원본 모델과 버전 (다르면 jeff-train 이 거절)
+      revision: 2fc06364715b967f1860aea9cf38778875588b17
