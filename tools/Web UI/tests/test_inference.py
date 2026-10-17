@@ -57,7 +57,7 @@ def test_mismatch_with_example_expectation_is_shown():
     wrong = next(key for key in config.action_labels() if key != example["expect"])
     outcome = logic.run(logic.example_json(example["name"]), profile_rows(), "", True, FakeClient(choice=wrong))
     assert outcome.row[6] == "❌"
-    assert f"기대값은 `{example['expect']}`" in outcome.status
+    assert outcome.status.startswith("❌ 틀림") and f"정답은 `{example['expect']}`" in outcome.status
 
 
 def test_edited_input_has_no_expectation():

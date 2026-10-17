@@ -1,7 +1,7 @@
 """엔진이 맞춰야 하는 모양 (콘센트). 루프는 이 파일에 있는 것만 안다.
 
 필수: '상태 확인'(health)·'판단'(choose)·'고를 수 있는 모델'(models).
-선택: 학습(Trainer). 학습을 못 하는 엔진이면 학습 탭이 안내만 보여준다. 평가는 평가 탭 만들 때 더한다.
+선택: 학습(Trainer)·서버 켜기(Server)·데이터 검사·분할(DatasetKit). 없는 엔진이면 그 탭은 안내만 보여준다.
 엔진은 loop 를 import 하지 않는다 (설정은 루프가 dict 로 넘겨준다).
 """
 
@@ -104,3 +104,33 @@ class Server(Protocol):
 
 def can_serve(engine: object) -> bool:
     return all(callable(getattr(engine, name, None)) for name in ("start_server", "server_exited", "stop_server"))
+
+
+@dataclass
+class KitResult:
+    ok: bool
+    message: str      # 화면에 보여줄 결과 (도구 출력 그대로 또는 한국어 요약)
+    report: str = ""  # 긴 보고서 (markdown). 없으면 빈 문자열
+
+
+class DatasetKit(Protocol):
+    """학습 데이터를 검사·분할하는 도구가 있는 엔진이 더 갖추는 것. 데이터셋 탭이 쓴다.
+    split 결과 폴더에는 train / development / calibration / test .jsonl 이 생긴다 (학습은 test 를 안 읽음)."""
+
+    def check_rows(self, file: Path) -> KitResult:
+        """줄마다 형식 검사."""
+
+    def split(self, file: Path, out_dir: Path, test: float, development: float, calibration: float,
+              seed: int) -> KitResult:
+        """묶음(family) 단위로 4개 파일로 나눈다. out_dir 에 이미 나눈 파일이 있으면 실패."""
+
+    def leak_check(self, split_dir: Path) -> KitResult:
+        """학습 파일에 평가용 줄(또는 거의 같은 줄)이 섞였는지."""
+
+    def shortcut_report(self, split_dir: Path) -> KitResult:
+        """정답이 겉모양(길이·위치·라벨 비율 등)으로 새는지 보고서. 깃발이 있어도 ok (사람이 볼 것)."""
+
+
+def can_prepare(engine: object) -> bool:
+    return all(callable(getattr(engine, name, None))
+               for name in ("check_rows", "split", "leak_check", "shortcut_report"))

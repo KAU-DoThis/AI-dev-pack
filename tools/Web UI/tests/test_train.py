@@ -128,9 +128,9 @@ def test_tab_explains_when_engine_cannot_train():
 
 def test_view_makes_plot_tables():
     s = TrainStatus("running", "학습 중", "a", [(1, 1.9), (2, 0.7)], [(0, 0.14, 1.6), (2, 0.71, 0.78)], 8, 2, "log")
-    message, loss, evals, log = logic.view(s)
+    message, loss, accuracy, nll, log = logic.view(s)
     assert list(loss.columns) == ["step", "loss"] and len(loss) == 2
-    assert set(evals["metric"]) == {"accuracy", "nll"} and len(evals) == 4
+    assert list(accuracy["accuracy"]) == [0.14, 0.71] and list(nll["nll"]) == [1.6, 0.78]
     assert "0.14 → **0.71**" in message and log == "log"
 
 

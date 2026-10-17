@@ -4,7 +4,7 @@
 name: Fintris
 title: 거래 판단              # 화면 제목
 item: 거래                    # 판단할 대상 하나를 부르는 말 ("예시 거래", "거래 입력", 기록 표 칸)
-display_keys: [merchant, counterparty]   # 결과 기록에 이름으로 보여줄 입력 칸 (앞에서부터 찾음)
-examples_source: 질의응답.txt  # 예시 출처 (화면 표시용)
+display_keys: [merchant_or_payee]   # 결과 기록에 이름으로 보여줄 입력 칸 (앞에서부터 찾음)
+examples_source: BE 기능명세서 F-20   # 예시 출처 (화면 표시용)
 # 루프 코드(loop/·engines/)에 나오면 안 되는 이 프로젝트 말 (tests/test_profile.py 가 지킴)
 loop_forbidden: [Fintris, 질의응답, 메모장, 데이터 계약, 가맹점, transaction]

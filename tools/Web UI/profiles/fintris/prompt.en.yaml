@@ -1,13 +1,9 @@
 # Jeff에 보내는 지시문과 선택지 설명. 추론 탭의 "설명 저장" 버튼이 이 파일을 덮어쓴다.
 # Jeff는 영어 전용 모델이라 영어로 쓴다. 선택지 id 목록은 labels.yaml 이 기준.
-instructions: Decide how the Fintris money manager should handle this transaction. Handle it automatically only when
-  its purpose is clear from the merchant or from the user's saved profile. Ask the user when the purpose cannot be
-  known from the data.
+instructions: This card or bank transaction was not matched by the merchant dictionary, fuzzy matching or embeddings.
+  Decide whether the in-house small model can classify it into a spending category, or whether the user must be asked.
 options:
-  auto: The purpose is clear (a well-known merchant, or it matches the user's saved profile), so classify it
-    automatically without bothering the user.
-  slm: The purpose is clear, but the user should get a short friendly notice written by the small in-house model.
-  external: A long free-form explanation, such as a monthly report, is needed, which only a large external model can
-    write.
-  ask: The purpose cannot be known from the data (an unknown person, a payment gateway such as PAYCO, a new recurring
-    transfer), so ask the user what it is.
+  slm: The merchant or payee name gives enough hints about what was bought (a local restaurant, a company name, an
+    app store bill), so the in-house small model can pick the spending category.
+  ask: What was bought cannot be known from the data (a payment gateway such as PAYCO, an open market, or a personal
+    transfer to a person), so ask the user what it was.

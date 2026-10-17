@@ -3,6 +3,7 @@
 루프 코드(loop/)는 여기 함수로만 프로젝트 내용을 읽는다 → 프로필 폴더만 바꾸면 다른 프로젝트.
 """
 
+import json
 import os
 from functools import lru_cache
 from pathlib import Path
@@ -48,6 +49,31 @@ def profile_dir() -> Path:
         raise ProfileError(f"프로필 '{name}' 을(를) 못 찾았어 ({path}). 있는 프로필: {', '.join(found) or '없음'}. "
                            "config/settings.yaml 의 profile 또는 환경변수 WEBUI_PROFILE 을 확인해 줘.")
     return path
+
+
+def outputs_dir() -> Path:
+    """프로필의 기록 폴더 (학습·평가 기록). 커밋 안 함. 테스트는 이 함수를 임시 폴더로 바꿔 끼운다."""
+    return profile_dir() / "outputs"
+
+
+def append_record(name: str, record: dict) -> None:
+    path = outputs_dir() / name
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "a", encoding="utf-8") as f:
+        f.write(json.dumps(record, ensure_ascii=False) + "\n")
+
+
+def read_records(name: str) -> list[dict]:
+    path = outputs_dir() / name
+    if not path.exists():
+        return []
+    records = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        try:
+            records.append(json.loads(line))
+        except json.JSONDecodeError:
+            continue  # 쓰다 끊긴 줄은 건너뜀
+    return records
 
 
 @lru_cache

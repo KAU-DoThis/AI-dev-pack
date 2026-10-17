@@ -1,15 +1,15 @@
 # Jeff가 고를 수 있는 라벨. 이 목록 밖 출력은 전부 실패로 본다.
-# 초안: 최종제안서 p.28 / 아키텍처 Q41 기준. 확정은 재혁·승현 (10번 노트 "같이 정할 것" 3번).
+# 기준: BE 기능명세서 F-20 거래 분류 4단계 (Back_end docs/FINTRIS_기능명세서.md, 10/13).
+#   1~3단계(사전·퍼지·임베딩)가 못 잡은 거래만 Jeff에 온다 → "자체 sLM 분류" 또는 "사용자 질문".
+#   자동 확정은 1~3단계 몫이라 auto 없음. 외부 LLM 분류 금지(수용 기준)라 external 없음.
+#   신뢰도 0.7 미만이면 사용자 질문(F-15) — 이 판단은 AI 서버가 한다.
 
 actions:
-  - id: auto
-    name: 자동 처리
   - id: slm
-    name: sLM 문장 생성
-  - id: external
-    name: 외부 LLM (Gemini)   # 멘토 피드백(05 F3)에 따라 빠질 수 있음
+    name: sLM이 분류
   - id: ask
     name: 사용자에게 질문
 
-# TODO: 분류기 카테고리 코드(fintris-ai categories)와 맞춰서 채우기. BE categories.code 와도 같아야 함.
+# 명세서 카테고리 12개(식비·배달/외식·카페/간식·교통·주거/관리비·통신·생활/생필품·쇼핑/의류·문화/여가·의료/건강·구독료·기타).
+# 코드 값은 BE categories.code 가 정해지면 채운다.
 categories: []

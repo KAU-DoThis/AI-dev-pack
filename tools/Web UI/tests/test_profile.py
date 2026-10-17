@@ -58,8 +58,8 @@ def test_unknown_profile_gives_korean_hint(monkeypatch):
 def test_run_all_without_examples_does_not_crash(monkeypatch):
     from loop.tabs.inference import ui
     monkeypatch.setattr(ui, "load_examples", lambda: [])
-    label, status, _, history, _ = ui._judge_all([], "", False, [], "en", "")
-    assert label is None and "예시가 없어" in status and history == []
+    label, label_b, status, _, history, _ = ui._judge_all([], "", False, [], "en", "", ui.NO_COMPARE)
+    assert label is None and label_b is None and "예시가 없어" in status and history == []
 
 
 def test_prompt_files_live_in_profile():

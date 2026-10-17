@@ -13,7 +13,8 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-from engines.base import Decision, EngineUnavailable, Health, TrainParams, TrainStatus
+from engines.base import Decision, EngineUnavailable, Health, KitResult, TrainParams, TrainStatus
+from engines.jeff.dataset import JeffKit
 from engines.jeff.server import WslServer
 from engines.jeff.trainer import WslTrainer
 
@@ -30,17 +31,33 @@ class JeffUnavailable(EngineUnavailable):
 class JeffClient:
     name = "Jeff"
 
-    def __init__(self, url: str, model: str = "", timeout: float = 30.0, train: dict | None = None):
+    def __init__(self, url: str, model: str = "", timeout: float = 30.0, train: dict | None = None,
+                 kit: str = ""):
         self.url, self.model, self.timeout = url.rstrip("/"), model, timeout
         self.trainer = WslTrainer(train, self.reload_adapters)
         self.server = WslServer(train)
+        self.kit = JeffKit({"kit": kit})
 
     @classmethod
     def from_settings(cls, settings: dict) -> "JeffClient":
         """settings = config/settings.yaml 의 engines.jeff. 환경변수 JEFF_URL·JEFF_MODEL 이 우선."""
         return cls(os.environ.get("JEFF_URL") or settings.get("url") or "http://127.0.0.1:8765",
                    os.environ.get("JEFF_MODEL") or settings.get("model") or "",
-                   float(settings.get("timeout", 30)), settings.get("train"))
+                   float(settings.get("timeout", 30)), settings.get("train"), settings.get("kit") or "")
+
+    # 학습 데이터 검사·분할은 jeff-kit 담당 (engines/jeff/dataset.py). 서버 없이 Windows 에서 돎.
+    def check_rows(self, file: Path) -> KitResult:
+        return self.kit.check_rows(file)
+
+    def split(self, file: Path, out_dir: Path, test: float, development: float, calibration: float,
+              seed: int) -> KitResult:
+        return self.kit.split(file, out_dir, test, development, calibration, seed)
+
+    def leak_check(self, split_dir: Path) -> KitResult:
+        return self.kit.leak_check(split_dir)
+
+    def shortcut_report(self, split_dir: Path) -> KitResult:
+        return self.kit.shortcut_report(split_dir)
 
     # 학습은 WSL 담당 (engines/jeff/trainer.py)
     def start_training(self, params: TrainParams) -> None:

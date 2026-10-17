@@ -83,9 +83,11 @@ def run(raw: str, rows: list[list], instructions: str, double_check: bool,
     example = example_for(state)
     expect = example.get("expect", "")
     match = "" if not expect else ("✅" if decision.choice == expect else "❌")
-    status = f"✅ {display_label(decision.choice)} (확률 {decision.probabilities[decision.choice]:.2f}, {decision.elapsed_ms:.0f}ms)"
+    mark = {"✅": "⭕ 맞음 ·", "❌": "❌ 틀림 ·"}.get(match, "")  # 예시에 정답이 있을 때만
+    status = (f"{mark} {display_label(decision.choice)} "
+              f"(확률 {decision.probabilities[decision.choice]:.2f}, {decision.elapsed_ms:.0f}ms)").strip()
     if expect and decision.choice != expect:
-        status += f" — 예시의 기대값은 `{expect}`"
+        status += f" — 정답은 `{expect}`"
     if empty:
         status += f" · ⚠️ 설명 없는 선택지: {', '.join(empty)} ({engine.name}는 id 이름만 보고 판단)"
     row = [datetime.now().strftime("%H:%M:%S"), example.get("name") or summarize(state), decision.choice,

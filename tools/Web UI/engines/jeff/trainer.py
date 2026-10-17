@@ -130,8 +130,7 @@ class WslTrainer:
         elif word == "done":
             self._reload_once(name)
             status.state = "done"
-            status.message = (f"✅ `{name}` 학습 끝 · 고른 체크포인트 step {selected}. "
-                              f"추론 탭 **모델**에서 `{name}` 을 고르면 써 볼 수 있어.")
+            status.message = f"✅ `{name}` 학습 끝 · 고른 체크포인트 step {selected}."
         elif word == "stopped":
             status.state, status.message = "stopped", f"⏹️ `{name}` 멈춤 (어댑터는 안 만들어짐)."
         else:
