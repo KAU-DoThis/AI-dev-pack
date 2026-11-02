@@ -19,7 +19,8 @@ PROMPT_HEADER = (
     "# 선택지 id 목록은 labels.yaml 이 기준.\n"
 )
 # profile.yaml 에 없을 때 쓰는 값
-PROFILE_DEFAULTS = {"name": "", "title": "판단", "item": "입력", "display_keys": [], "examples_source": ""}
+PROFILE_DEFAULTS = {"name": "", "title": "판단", "item": "입력", "display_keys": [], "examples_source": "",
+                    "review_label": "", "goal_recall": 0.95, "goal_precision": 0.90}
 
 
 class ProfileError(Exception):

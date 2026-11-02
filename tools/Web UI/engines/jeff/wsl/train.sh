@@ -18,6 +18,11 @@ for f in train development calibration; do
   if ! cp "$data/$f.jsonl" "$D/data/$f.jsonl"; then echo "failed 2" > "$D/state"; exit 2; fi
 done
 
+# 개발셋 평가 간격: 전체 step 의 약 30번 (데이터가 작으면 2 step 마다). 2 step 고정이면 큰 데이터에서 평가에만 몇 시간 걸림
+steps=$(( $(wc -l < "$D/data/train.jsonl") * epochs / eff ))
+eval_every=$(( steps / 30 ))
+[ "$eval_every" -lt 2 ] && eval_every=2
+
 cd "$R/jeff"
 export JEFF_EVENTS="$D/events.jsonl" HF_HOME="$R/.cache/hf" PYTHONIOENCODING=utf-8
 .venv/bin/jeff-train \
@@ -25,7 +30,7 @@ export JEFF_EVENTS="$D/events.jsonl" HF_HOME="$R/.cache/hf" PYTHONIOENCODING=utf
   --run "$D/run" --output "$D/out" \
   --initial-checkpoint "$R/models/jeff-base-v1.3" --base-model "$base_model" --revision "$revision" \
   --lora-rank "$rank" --epochs "$epochs" --batch-size "$batch" --effective-batch-size "$eff" --lr "$lr" \
-  --eval-every 2 --cpu-threads 8 > "$D/train.log" 2>&1 &
+  --eval-every "$eval_every" --cpu-threads 8 > "$D/train.log" 2>&1 &
 echo $! > "$D/pid"
 wait $!
 code=$?
