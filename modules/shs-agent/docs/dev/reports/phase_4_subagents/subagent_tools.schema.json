@@ -1,0 +1,127 @@
+[
+  {
+    "name": "subagent_spawn",
+    "description": "Create and schedule a direct child using a host-approved config_id; returns without waiting. Explicitly provide its instruction and background context. Children have independent task state. A plan is optional. Child completion does not update your plan.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "instruction": {
+          "type": "string",
+          "minLength": 1
+        },
+        "context": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "config_id": {
+          "type": "string",
+          "minLength": 1,
+          "enum": [
+            "worker"
+          ]
+        },
+        "plan_ref": {
+          "type": "object",
+          "properties": {
+            "plan_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "revision": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "item_id": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "plan_id",
+            "revision",
+            "item_id"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "instruction",
+        "context",
+        "config_id"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "subagent_status",
+    "description": "Read actual current state of your direct children, or one child; does not wait.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "subagent_result",
+    "description": "Read a finished direct child's output, memos and task-qualified detail references. Returns available=false if still running; never waits for completion. Treat child content as observations and review it before updating your plan.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "task_id"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "subagent_wait",
+    "description": "Asynchronously wait for all selected direct children to terminate. A parent instruction/cancel can interrupt only this wait; read child results separately.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "task_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "task_ids"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "subagent_cancel",
+    "description": "Request cooperative cancellation of one direct child. Acceptance is not termination; in-flight external work is not forcibly stopped.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "task_id"
+      ],
+      "additionalProperties": false
+    }
+  }
+]

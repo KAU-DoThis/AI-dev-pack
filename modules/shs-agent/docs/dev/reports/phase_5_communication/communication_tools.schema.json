@@ -1,0 +1,135 @@
+[
+  {
+    "name": "subagent_ask",
+    "description": "Ask a direct child; immediately returns request_id without stopping its work. Optional related_request_id links a request known to you, for example another child's question.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        },
+        "related_request_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "task_id",
+        "message"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "agent_reply",
+    "description": "Answer a received question. Recipient is determined by the recorded request, never supplied here. This does not complete your task; continue your work after answering.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "request_id",
+        "message"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "agent_wait_reply",
+    "description": "Wait for one of your questions to be answered or closed. New requests/messages or Host control release the wait with a reason; handle them and wait again using the original request_id. Releasing this wait never cancels the request.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "request_id"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "subagent_send",
+    "description": "Send a direct child information (notify, default) or an additional instruction (instruction). Only an instruction supersedes in-flight decisions using the existing instruction rules.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "notify",
+            "instruction"
+          ],
+          "default": "notify"
+        }
+      },
+      "required": [
+        "task_id",
+        "message"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "parent_ask",
+    "description": "Ask your actual parent; immediately returns request_id. Use agent_wait_reply separately when needed. A positive reply does not grant additional tools. Optional related_request_id links a request known to you.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "minLength": 1
+        },
+        "related_request_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "message"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "parent_notify",
+    "description": "Send information to your actual parent, without expecting a reply or changing its instruction revision.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "message"
+      ],
+      "additionalProperties": false
+    }
+  }
+]
