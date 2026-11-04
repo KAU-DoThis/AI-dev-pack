@@ -1,0 +1,14 @@
+prune src/shs_agent/agent/old
+prune src/shs_agent/agent/_deprecated
+recursive-include tests *.py
+include examples/subagents.py
+include examples/communication.py
+include examples/recursive_subagents.py
+include examples/tool_integration.py
+include examples/full_workflow_host.py
+include examples/workflow_support.py
+include examples/replay_task_tree.py
+include examples/ollama_workflow_host.py
+include examples/workspace_coding_host.py
+include examples/context_recovery_host.py
+recursive-include docs *.md

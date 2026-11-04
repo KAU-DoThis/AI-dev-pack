@@ -1,0 +1,73 @@
+[
+  {
+    "name": "tool_request",
+    "description": "Request a missing Host tool for this task, with its reason and intended use. Routes to your direct parent, or to Host at root. Requests and natural language replies grant no permission. Use tool_wait or tool_status to inspect actual application.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "requested_tool": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "intended_use": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "requested_tool",
+        "reason",
+        "intended_use"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "tool_forward",
+    "description": "Forward a structured tool request received from a direct child to your parent, or submit it to Host at root. Keeps the original requesting task. Does not grant tools.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "request_id"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "tool_wait",
+    "description": "Wait for a known tool request decision. Incoming messages and Host control release this wait. Approved means queued: finish this tool batch before using the tool in the next decision. No automatic timeout or retry.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "request_id"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "tool_status",
+    "description": "Read this task's applied tool names/schema identity, revision, last offered revision and known structured requests. Only applied tools in the current schema are callable.",
+    "parameters": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    }
+  }
+]

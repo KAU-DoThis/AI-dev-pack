@@ -1,0 +1,75 @@
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "shs-agent"
+version = "0.1.0"
+description = "General-purpose problem solving agent runtime"
+requires-python = ">=3.11"
+
+dependencies = []
+
+[project.optional-dependencies]
+
+# LLM Providers
+openai = [
+    "openai",
+]
+
+ollama = [
+    "ollama>=0.6.2",
+]
+
+# Storage Providers
+storage = ["SQLAlchemy>=2.0,<3.0"]
+
+postgresql = [
+    "SQLAlchemy>=2.0,<3.0",
+    "psycopg[binary]>=3.1,<4.0",
+]
+
+mysql = [
+    "SQLAlchemy>=2.0,<3.0",
+    "PyMySQL>=1.1,<2.0",
+]
+
+# Development
+dev = [
+    "pytest",
+    "pytest-asyncio",
+]
+
+# All optional providers
+all = [
+    "SQLAlchemy>=2.0,<3.0",
+    "openai",
+    "ollama>=0.6.2",
+    "psycopg[binary]>=3.1,<4.0",
+    "PyMySQL>=1.1,<2.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+exclude = ["shs_agent.agent.old", "shs_agent.agent.old.*", "shs_agent.agent._deprecated", "shs_agent.agent._deprecated.*"]
+
+[tool.setuptools]
+include-package-data = false
+
+[tool.setuptools.data-files]
+"share/shs-agent/examples" = [
+    "examples/subagents.py", "examples/communication.py", "examples/recursive_subagents.py",
+    "examples/tool_integration.py", "examples/full_workflow_host.py", "examples/workflow_support.py",
+    "examples/replay_task_tree.py", "examples/ollama_workflow_host.py",
+    "examples/workspace_coding_host.py",
+    "examples/context_recovery_host.py",
+]
+"share/shs-agent" = ["README.md"]
+"share/shs-agent/docs/dev" = ["docs/dev/HOST_USAGE.md"]
+"share/shs-agent/docs/dev/architecture" = ["docs/dev/architecture/SHS_AGENT_TARGET_ARCHITECTURE.md"]
+"share/shs-agent/docs/dev/reports/phase_8_integration" = ["docs/dev/reports/phase_8_integration/*.md"]
+"share/shs-agent/docs/dev/reports" = ["docs/dev/reports/architecture_v1_1.md"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
