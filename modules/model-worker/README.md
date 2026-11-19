@@ -1,11 +1,11 @@
 # model-worker
 
-Jeff·sLM을 SQS 큐로 연결하는 코드. 두 부분으로 되어 있다.
+Jeff·sLM을 SQS 큐로 연결하는 코드입니다. 두 부분으로 되어 있습니다.
 
-- **워커** (`python -m sqs_bridge`): 모델이 있는 PC에서 돈다. 자기 요청 큐에서 요청을 꺼내 같은 PC의 모델(jeff-serve·vLLM)에 묻고, 답을 결과 큐에 넣는다.
-- **클라이언트** (`sqs_bridge/client.py`의 `ModelQueue`): AI 서버가 쓴다. 요청 큐에 넣고 결과 큐에서 자기 답을 받는다.
+- **워커** (`python -m sqs_bridge`): 모델이 있는 PC에서 돕니다. 자기 요청 큐에서 요청을 꺼내 같은 PC의 모델(jeff-serve·vLLM)에 묻고, 답을 결과 큐에 넣습니다.
+- **클라이언트** (`sqs_bridge/client.py`의 `ModelQueue`): AI 서버가 씁니다. 요청 큐에 넣고 결과 큐에서 자기 답을 받습니다.
 
-AI 서버와 모델 PC는 직접 연결되지 않고 큐로만 주고받는다. 워커 코드는 하나이고, PC마다 `.env`만 다르게 쓴다 (Jeff PC는 Jeff 큐, sLM PC는 sLM 큐).
+AI 서버와 모델 PC는 직접 연결되지 않고 큐로만 주고받습니다. 워커 코드는 하나이고, PC마다 `.env`만 다르게 씁니다 (Jeff PC는 Jeff 큐, sLM PC는 sLM 큐).
 
 ## 빨리 띄우기
 
@@ -15,7 +15,8 @@ cp .env.example .env      # 이 PC 것만 true로, 칸 채우기
 python -m sqs_bridge
 ```
 
-준비(AWS 키·모델 서버), `.env` 칸 설명, 주고받는 데이터, 오류 대처는 **`docs/model-worker.md`**에 있다. Jeff로 처음부터 끝까지 보여주고, sLM은 바꿀 칸만 표로 정리했다.
+설치 방법(AWS 키·모델 서버), `.env` 칸 설명, 입출력, 주의 사항은 **`docs/model-worker.md`**에 있습니다. Jeff로 처음부터 끝까지 보여 주고, sLM은 바꿀 칸만 표로 정리했습니다.
+왕복 확인 예제는 `examples/model-worker/send_one.py`입니다.
 
 | 파일 | 하는 일 |
 |---|---|
