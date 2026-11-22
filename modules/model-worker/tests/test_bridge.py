@@ -212,7 +212,7 @@ def slm_post(content, seen=None):
 ])
 def test_slm_handler_parses_last_code(content, code):
     handle = slm_worker.make_handler("http://slm/v1", "k", "m", post=slm_post(content))
-    assert handle({"name": "명동칼국수"}) == {"category_code": code, "prompt": "v3"}
+    assert handle({"name": "명동칼국수"}) == {"category_code": code, "prompt": slm_worker.DEFAULT_PROMPT}
 
 
 def test_slm_handler_sends_only_name_type_and_prompt():
@@ -221,7 +221,7 @@ def test_slm_handler_sends_only_name_type_and_prompt():
     handle({"name": "명동칼국수", "merchant_type": "일반한식", "amount": 15000})
     url, body, headers = seen[0]
     assert url == "http://slm/v1/chat/completions" and body["model"] == "qwen" and body["temperature"] == 0
-    assert body["messages"][0]["content"] == slm_worker.PROMPTS["v3"]
+    assert body["messages"][0]["content"] == slm_worker.PROMPTS["v4"]
     user = body["messages"][1]["content"]
     assert "명동칼국수" in user and "일반한식" in user and "15000" not in json.dumps(body, ensure_ascii=False)
     assert headers == {"Authorization": "Bearer secret"}

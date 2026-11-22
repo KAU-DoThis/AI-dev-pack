@@ -107,7 +107,7 @@ jeff 큐 확인됨
 | 모델 주소 칸 | `JEFF_URL` | `SLM_URL` — **`/v1`까지만** (예: `http://127.0.0.1:8000/v1`). 뒤의 `/chat/completions`는 워커가 붙임 |
 | 모델 이름 칸 | `JEFF_MODEL` | `SLM_MODEL` (필수) — `curl http://127.0.0.1:8000/v1/models` 응답의 `id` 그대로 |
 | 키 칸 | 없음 | `SLM_API_KEY` — vLLM을 `--api-key`로 띄웠을 때만, 아니면 비움 |
-| 지시문 | `JEFF_PROMPT_FILE` | `SLM_PROMPT` (`v1`·`v2`·`v3`, 기본 `v3`, `sqs_bridge/slm.py`에 있음) |
+| 지시문 | `JEFF_PROMPT_FILE` | `SLM_PROMPT` (`v1`~`v4`, 기본 `v4`, `sqs_bridge/slm.py`에 있음) |
 
 주고받는 데이터가 어떻게 다른지는 4.2절에 있습니다.
 
@@ -200,7 +200,7 @@ python -m pytest -q
 | 요청 payload | `{"state": {…}}` | `{"name": "스타벅스 강남점", "merchant_type": "커피전문점"}` (`merchant_type`은 없을 수 있음. 금액·시간·사용자 ID는 안 보냄) |
 | 모델에 보내는 것 | `POST /v1/systemone` | `POST {SLM_URL}/chat/completions` (OpenAI 표준, `temperature: 0`) |
 | 모델 답에서 꺼내는 것 | `choice`·`probabilities` | 답 글 안의 `"category_code":"<코드>"` (앞뒤에 다른 글이 있어도 이 부분만 뽑음) |
-| 결과 `result` | `{"choice", "probabilities", "confidence", "model"}` | `{"category_code": "CAFE", "prompt": "v3"}` |
+| 결과 `result` | `{"choice", "probabilities", "confidence", "model"}` | `{"category_code": "CAFE", "prompt": "v4"}` |
 
 sLM 카테고리 코드: `FOOD` `DELIVERY_DINING` `CAFE` `TRANSPORT` `HOUSING` `TELECOM` `LIVING` `SHOPPING` `LEISURE` `HEALTH` `SUBSCRIPTION` `ETC` `UNKNOWN`.
 답 글에서 코드를 못 찾으면 `category_code`가 `null`입니다. `null`·`UNKNOWN`·목록 밖의 코드면 AI 서버가 사용자에게 묻는 쪽으로 넘깁니다.
