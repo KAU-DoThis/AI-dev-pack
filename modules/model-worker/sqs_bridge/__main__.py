@@ -27,7 +27,7 @@ TRUE = {"1", "true", "yes", "on"}
 class Lane:
     task: str
     queue_url: str
-    handler: Callable[[dict], dict]
+    handler: Callable[[dict, "float | None"], dict]
 
 
 def enabled(env: Mapping[str, str], name: str) -> bool:

@@ -12,7 +12,7 @@ import re
 import urllib.error
 import urllib.request
 
-from .messages import ModelUnavailable
+from .messages import ModelUnavailable, call_limit
 
 
 _HINTS = {
@@ -90,7 +90,7 @@ def make_handler(url: str, api_key: str, model: str, timeout: float = 30.0, prom
     system = PROMPTS[prompt]
     headers = {"Authorization": f"Bearer {api_key}"} if api_key else {}
 
-    def handle(payload: dict) -> dict:
+    def handle(payload: dict, time_left: float | None = None) -> dict:
         name = payload.get("name")
         if not isinstance(name, str) or not name.strip():
             raise ValueError("payload.name 이 없음")
@@ -99,7 +99,7 @@ def make_handler(url: str, api_key: str, model: str, timeout: float = 30.0, prom
             user += f"\n업종: {payload['merchant_type']}"
         body = {"model": model, "temperature": 0, "max_tokens": 400,
                 "messages": [{"role": "system", "content": system}, {"role": "user", "content": f"{user}\n/no_think"}]}
-        text = post(url + "/chat/completions", body, headers, timeout)["choices"][0]["message"].get("content") or ""
+        text = post(url + "/chat/completions", body, headers, call_limit(timeout, time_left))["choices"][0]["message"].get("content") or ""
         found = _CODE.findall(text)
         return {"category_code": found[-1] if found else None, "prompt": prompt}
 

@@ -6,11 +6,12 @@ from __future__ import annotations
 
 import json
 import os
+import time
 import urllib.error
 import urllib.request
 from pathlib import Path
 
-from .messages import ModelUnavailable
+from .messages import ModelUnavailable, call_limit
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -43,7 +44,8 @@ def make_handler(url: str, model: str = "", timeout: float = 30.0, options: dict
     post = post or _post
     url = url.rstrip("/")
 
-    def handle(payload: dict) -> dict:
+    def handle(payload: dict, time_left: float | None = None) -> dict:
+        deadline = time.monotonic() + call_limit(timeout, time_left)  # health·systemone 두 번 합쳐서
         if not isinstance(payload.get("state"), dict):
             raise ValueError("payload.state 가 없음")
         opts = payload.get("options") or options
@@ -53,9 +55,9 @@ def make_handler(url: str, model: str = "", timeout: float = 30.0, options: dict
         text = (payload.get("instructions") or instructions or "").strip()
         if text:
             question["instructions"] = text
-        name = payload.get("model") or model or post(url + "/health", None, timeout)["model"]
+        name = payload.get("model") or model or post(url + "/health", None, _left(deadline))["model"]
         body = {"model": name, "state": payload["state"], "questions": {"choice": question}}
-        answer = (post(url + "/v1/systemone", body, timeout).get("answers") or {}).get("choice") or {}
+        answer = (post(url + "/v1/systemone", body, _left(deadline)).get("answers") or {}).get("choice") or {}
         probs = answer.get("probabilities")
         if not isinstance(probs, dict) or answer.get("choice") not in opts:
             raise ValueError(f"Jeff 답 모양이 다름: {json.dumps(answer, ensure_ascii=False)[:200]}")
@@ -63,6 +65,10 @@ def make_handler(url: str, model: str = "", timeout: float = 30.0, options: dict
                 "confidence": float(answer.get("confidence", 0.0)), "model": name}
 
     return handle
+
+
+def _left(deadline: float) -> float:
+    return max(0.1, deadline - time.monotonic())
 
 
 def _post(url: str, body: dict | None, timeout: float) -> dict:

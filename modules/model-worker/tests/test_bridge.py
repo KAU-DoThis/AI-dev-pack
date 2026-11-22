@@ -78,7 +78,7 @@ def test_worker_replies_and_deletes():
     sqs = FakeSQS()
     req = ModelRequest("jeff", {"state": {"x": 1}}, REPLY, expires_at=time.time() + 60)
     put(sqs, req)
-    drain(sqs, {"jeff": lambda p: {"choice": "slm", "seen": p["state"]["x"]}})
+    drain(sqs, {"jeff": lambda p, _t=None: {"choice": "slm", "seen": p["state"]["x"]}})
     [reply] = sqs.bodies(REPLY)
     assert reply["request_id"] == req.request_id and reply["ok"] is True
     assert reply["result"] == {"choice": "slm", "seen": 1} and reply["expires_at"] == req.expires_at
@@ -88,7 +88,7 @@ def test_worker_replies_and_deletes():
 def test_worker_handler_error_becomes_error_reply():
     sqs = FakeSQS()
     put(sqs, ModelRequest("jeff", {}, REPLY))
-    drain(sqs, {"jeff": lambda p: 1 / 0})
+    drain(sqs, {"jeff": lambda p, _t=None: 1 / 0})
     [reply] = sqs.bodies(REPLY)
     assert reply["ok"] is False and "ZeroDivisionError" in reply["error"]
 
@@ -96,7 +96,7 @@ def test_worker_handler_error_becomes_error_reply():
 def test_worker_unknown_task():
     sqs = FakeSQS()
     put(sqs, ModelRequest("slm", {}, REPLY))
-    drain(sqs, {"jeff": lambda p: {}})
+    drain(sqs, {"jeff": lambda p, _t=None: {}})
     assert sqs.bodies(REPLY)[0]["ok"] is False
 
 
@@ -106,7 +106,7 @@ def test_worker_drops_expired_and_bad_without_reply():
     sqs.send_message(QueueUrl=REQ, MessageBody="not json")
     sqs.send_message(QueueUrl=REQ, MessageBody=json.dumps({"task": "jeff"}))
     called = []
-    drain(sqs, {"jeff": lambda p: called.append(p) or {}})
+    drain(sqs, {"jeff": lambda p, _t=None: called.append(p) or {}})
     assert not called and not sqs.bodies(REPLY) and not sqs.in_flight
 
 
@@ -115,7 +115,7 @@ def test_worker_keeps_request_when_reply_fails():
     put(sqs, ModelRequest("jeff", {}, REPLY))
     msg = sqs.receive_message(QueueUrl=REQ)["Messages"][0]
     sqs.fail_send = True
-    assert worker.handle_one(sqs, REQ, msg, {"jeff": lambda p: {}}, log=lambda _: None) == "send-failed"
+    assert worker.handle_one(sqs, REQ, msg, {"jeff": lambda p, _t=None: {}}, log=lambda _: None) == "send-failed"
     assert msg["ReceiptHandle"] in sqs.in_flight  # 안 지움 → 숨김 시간 뒤 다시 처리
 
 
@@ -138,7 +138,7 @@ class AutoReplySQS(FakeSQS):
 def test_client_gets_own_reply_and_deletes_orphans():
     other = ModelResult("someone-else", True, result={}, expires_at=time.time() + 60).to_json()
     stale = ModelResult("old", True, result={}, expires_at=time.time() - 1).to_json()
-    sqs = AutoReplySQS({"jeff": lambda p: {"choice": "ask"}}, [other, stale])
+    sqs = AutoReplySQS({"jeff": lambda p, _t=None: {"choice": "ask"}}, [other, stale])
     q = ModelQueue(sqs, {"jeff": REQ}, REPLY, wait_seconds=0, log=lambda _: None)
     try:
         res = q.call("jeff", {"state": {}}, timeout=5)
@@ -265,3 +265,34 @@ def test_slm_http_error_hides_key():
     finally:
         urllib.request.urlopen = real
     assert "secret" not in str(err.value) and "401" in str(err.value)
+
+
+def test_worker_limits_model_call_to_time_server_still_waits():
+    """서버 기한 10초 > 남은 3초면 모델 호출도 3초 안. 서버가 포기한 요청에 모델을 30초 붙잡지 않는다."""
+    seen = []
+    sqs = FakeSQS()
+    req = ModelRequest("jeff", {"state": {}}, REPLY, expires_at=time.time() + 3)
+    sqs.send_message(QueueUrl=REQ, MessageBody=req.to_json())
+    drain(sqs, {"jeff": lambda p, t=None: seen.append(t) or {}})
+    assert seen and 2 < seen[0] <= 3
+
+
+def test_jeff_and_slm_handlers_use_shorter_of_setting_and_time_left():
+    timeouts = []
+
+    def jeff_post(url, body, timeout):
+        timeouts.append(timeout)
+        return {"model": "m"} if body is None else {"answers": {"choice": {"choice": "ask", "probabilities": {"ask": 0.9, "slm": 0.1}}}}
+
+    handle = make_handler("http://jeff", options={"slm": "", "ask": ""}, timeout=30, post=jeff_post)
+    handle({"state": {}}, 2.0)
+    assert len(timeouts) == 2 and all(t <= 2.0 for t in timeouts)  # health + systemone 합쳐서 2초 안
+    handle({"state": {}})                                         # 기한 없으면 설정값
+    assert timeouts[-1] > 29
+
+    seen = []
+    slm_handle = slm_worker.make_handler("http://slm/v1", "k", "m", timeout=30,
+                                         post=lambda u, b, h, t: seen.append(t) or {"choices": [{"message": {"content": "{}"}}]})
+    slm_handle({"name": "가게"}, 4.0)
+    slm_handle({"name": "가게"}, -1.0)   # 이미 지남 → 최소값
+    assert seen == [4.0, 0.1]

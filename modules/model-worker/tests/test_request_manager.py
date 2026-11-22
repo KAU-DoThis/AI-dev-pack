@@ -37,7 +37,7 @@ def test_concurrent_calls_each_get_own_answer():
                [("a", "jeff"), ("b", "jeff"), ("c", "jeff"), ("d", "slm")]]
     for t in callers:
         t.start()
-    echo = {"jeff": lambda p: {"echo": p["name"]}, "slm": lambda p: {"echo": p["name"]}}
+    echo = {"jeff": lambda p, _t=None: {"echo": p["name"]}, "slm": lambda p, _t=None: {"echo": p["name"]}}
     deadline = time.time() + 3
     while q.pending_count() < 4 and time.time() < deadline:
         time.sleep(0.01)
@@ -68,14 +68,14 @@ def test_timeout_removes_pending_and_late_reply_becomes_orphan():
     q.stop(1)
     [m] = sqs.receive_message(QueueUrl=REQ)["Messages"]
     m["Body"] = m["Body"].replace('"expires_at": ', '"expires_at": 0, "_old": ')  # 기한 무시하고 늦게 처리
-    worker.handle_one(sqs, REQ, m, {"jeff": lambda p: {}}, log=quiet)
+    worker.handle_one(sqs, REQ, m, {"jeff": lambda p, _t=None: {}}, log=quiet)
     assert q._handle(sqs.receive_message(QueueUrl=REPLY)["Messages"][0]) == "orphan"
 
 
 def test_retryable_failure_is_sent_again_then_succeeds():
     calls = []
 
-    def flaky(payload):
+    def flaky(payload, _t=None):
         calls.append(payload)
         if len(calls) == 1:
             raise ModelUnavailable("jeff-serve 연결 실패")
@@ -91,7 +91,7 @@ def test_retryable_failure_is_sent_again_then_succeeds():
 def test_retry_stops_after_max_retries():
     calls = []
 
-    def down(payload):
+    def down(payload, _t=None):
         calls.append(payload)
         raise ModelUnavailable("꺼짐")
 
@@ -105,7 +105,7 @@ def test_retry_stops_after_max_retries():
 def test_non_retryable_failure_is_delivered_at_once():
     calls = []
 
-    def bad(payload):
+    def bad(payload, _t=None):
         calls.append(payload)
         raise ValueError("이름 없음")
 

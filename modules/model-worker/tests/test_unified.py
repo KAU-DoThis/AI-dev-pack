@@ -47,9 +47,9 @@ def test_enabled_lane_without_setting_stops_at_start():
 
 def test_check_access_reports_queue_without_permission():
     sqs = LockedSQS()
-    check_access(sqs, [Lane("jeff", "q-jeff", lambda p: p)], log=lambda _: None)
+    check_access(sqs, [Lane("jeff", "q-jeff", lambda p, _t=None: p)], log=lambda _: None)
     with pytest.raises(SystemExit, match="slm 큐에 접근 못 함"):
-        check_access(sqs, [Lane("slm", "denied-slm", lambda p: p)], log=lambda _: None)
+        check_access(sqs, [Lane("slm", "denied-slm", lambda p, _t=None: p)], log=lambda _: None)
 
 
 def _wait(cond, seconds=3.0):
@@ -63,11 +63,11 @@ def test_each_queue_has_its_own_thread_and_same_reply_queue():
     sqs = LockedSQS()
     slow = threading.Event()
 
-    def jeff(payload):  # Jeff가 막혀 있어도 sLM 줄은 계속 돌아야 함
+    def jeff(payload, _t=None):  # Jeff가 막혀 있어도 sLM 줄은 계속 돌아야 함
         slow.wait(2)
         return {"choice": "slm"}
 
-    lanes = [Lane("jeff", "q-jeff", jeff), Lane("slm", "q-slm", lambda p: {"category_code": "CAFE"})]
+    lanes = [Lane("jeff", "q-jeff", jeff), Lane("slm", "q-slm", lambda p, _t=None: {"category_code": "CAFE"})]
     jeff_req = ModelRequest("jeff", {"state": {}}, REPLY)
     slm_req = ModelRequest("slm", {"name": "스타벅스"}, REPLY)
     sqs.send_message(QueueUrl="q-jeff", MessageBody=jeff_req.to_json())
@@ -99,7 +99,7 @@ def test_one_lane_crash_stops_all_and_reports_failure():
             return Dead()
         return sqs
 
-    lanes = [Lane("jeff", "q-jeff", lambda p: p), Lane("slm", "q-slm", lambda p: p)]
+    lanes = [Lane("jeff", "q-jeff", lambda p, _t=None: p), Lane("slm", "q-slm", lambda p, _t=None: p)]
     stop = threading.Event()
     logs: list[str] = []
     assert run_lanes(broken_sqs, lanes, stop, log=logs.append) is False

@@ -6,7 +6,9 @@ from typing import Callable
 
 from .messages import MessageError, ModelRequest, ModelResult, ModelUnavailable
 
-Handler = Callable[[dict], dict]
+# (payload, 남은 초) -> 결과. 남은 초 = 서버가 아직 기다려 주는 시간 (기한 없으면 None).
+# 모델 호출을 이 시간 안으로 줄여야, 서버가 포기한 요청에 모델을 붙잡고 있지 않는다.
+Handler = Callable[[dict, "float | None"], dict]
 
 
 def handle_one(sqs, queue_url: str, message: dict, handlers: dict[str, Handler],
@@ -30,7 +32,8 @@ def handle_one(sqs, queue_url: str, message: dict, handlers: dict[str, Handler],
         res = ModelResult(req.request_id, False, error=f"이 워커는 '{req.task}' 일을 모름")
     else:
         try:
-            res = ModelResult(req.request_id, True, result=handler(req.payload))
+            time_left = req.expires_at - time.time() if req.expires_at else None
+            res = ModelResult(req.request_id, True, result=handler(req.payload, time_left))
         except Exception as error:  # 모델 오류도 답장으로 알려서 서버가 바로 대체 처리하게
             res = ModelResult(req.request_id, False, error=f"{type(error).__name__}: {error}"[:500],
                               retryable=_retryable(error))

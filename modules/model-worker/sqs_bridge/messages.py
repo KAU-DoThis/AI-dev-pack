@@ -76,3 +76,8 @@ def _load(text: str) -> dict:
     if not isinstance(data, dict):
         raise MessageError("JSON 객체가 아님")
     return data
+
+
+def call_limit(timeout: float, time_left: float | None) -> float:
+    """모델 호출 제한 = min(워커 설정값, 서버가 기다려 주는 남은 시간). 0이면 urllib가 막혀서 최소 0.1초."""
+    return timeout if time_left is None else max(0.1, min(timeout, time_left))

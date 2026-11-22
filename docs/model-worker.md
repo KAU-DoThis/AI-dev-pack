@@ -70,7 +70,7 @@ cp .env.example .env          # Windows PowerShell: Copy-Item .env.example .env
 | `JEFF_URL` | | jeff-serve 주소 | `http://127.0.0.1:8765` (기본값) |
 | `JEFF_MODEL` | | jeff-serve에서 쓸 모델 이름. 비우면 jeff-serve 기본 모델 | (비움) |
 | `JEFF_PROMPT_FILE` | | Jeff에 같이 보낼 선택지(`slm`·`ask`)·지시문 파일. 비우면 요청에 선택지가 꼭 있어야 함 | `../../tools/Web UI/profiles/fintris/prompt.ko.yaml` |
-| `JEFF_TIMEOUT` | | 모델 답 기다리는 시간(초) | `30` |
+| `JEFF_TIMEOUT` | | 모델 답을 기다리는 최대 시간(초). 서버가 기다려 주는 시간이 더 짧으면 그만큼만 기다립니다 | `30` |
 
 **필수** 칸이 비어 있으면 워커가 시작할 때 `설정 없음: <이름>`을 띄우고 멈춥니다.
 
